@@ -3,7 +3,7 @@
     min-height: calc(100vh - 96px);
     position: relative;
     width: 90%;
-    max-width: 1400px;
+    max-width: 1600px;
     margin: 0 auto;
     padding: 0 20px;
     align-items: center;
@@ -11,15 +11,16 @@
 }
 
 #cta{
-    width: 45%;
+    width: 40%;
     display: flex;
     flex-direction: column;
-    gap: clamp(20px, 3vw, 28px);
+    gap: 30px;
     margin-top: 0;
+    margin-left: 15px;
 }
 
 #cta .title{
-    font-size: clamp(36px, 5vw, 64px);
+    font-size: 75px;
     color: #1D1D1D;
     line-height: 1.2;
 }
@@ -29,7 +30,7 @@
 }
 
 #cta .description{
-    font-size: clamp(16px, 2vw, 20px);
+    font-size: 26px;
     color: #1D1D1D;
 }
 
@@ -63,7 +64,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 55%;
+    width: 40%;
     z-index: 2;
 }
 
@@ -77,18 +78,15 @@
 
 #banner img{
     width: 100%;
-    max-width: 600px;
-    height: auto;
-    object-fit: contain;
-    display: block;
-    margin: 0 auto;
+    max-width: 800px;
+    margin-left: 100%;
 }
 
 
 @media screen and (max-width: 1550px){
     #banner img{
-        width: 85%;
-        height: 90%;
+        width: 100%;
+        height: 100%;
         margin-right: -10%;
         margin-top: -3%;
     }
@@ -101,8 +99,8 @@
 
 @media screen and (max-width: 1350px){
     #banner img{
-        width: 80%;
-        height: 85%;
+        width: 100%;
+        height: 100%;
         margin-top: 0%;
     }
 
@@ -151,7 +149,7 @@
     #cta .title{
         font-size: 48px;
         line-height: 60px;
-        margin-top: 10%;
+        margin-top: 5%;
     }
     
     #cta .description{
