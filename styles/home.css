@@ -1,13 +1,12 @@
 #home{
     display: flex;
-    min-height: calc(100vh - 96px);
+    min-height: calc(100vh - 100px);
     position: relative;
     width: 90%;
     max-width: 1600px;
     margin: 0 auto;
     padding: 0 20px;
     align-items: center;
-    gap: 2%;
 }
 
 #cta{
@@ -15,14 +14,13 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    margin-top: 0;
-    margin-left: 15px;
+    margin-left: 2%;
 }
 
 #cta .title{
-    font-size: 75px;
+    font-size: 70px;
     color: #1D1D1D;
-    line-height: 1.2;
+    line-height: 80px;
 }
 
 #cta .title span{
@@ -30,7 +28,7 @@
 }
 
 #cta .description{
-    font-size: 26px;
+    font-size: 22px;
     color: #1D1D1D;
 }
 
