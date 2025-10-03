@@ -1,0 +1,16 @@
+footer {
+  background-color: #ee5656;
+}
+
+#footer-items {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 8px;
+}
+
+#copyright {
+  font-size: 15px;
+  color: #eeeeee;
+  font-weight: bold;
+}
