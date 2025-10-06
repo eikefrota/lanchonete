@@ -3,6 +3,8 @@ import Header from "./components/Header";
 import Menu from "./components/Menu";
 import CartModal from "./components/CartModal";
 import AddressModal from "./components/AddressModal";
+import useCart from "./hooks/useCart";
+import { fetchAddressByCep } from "./utils/viacep";
 
 import "./styles/style.css";
 
@@ -97,9 +99,10 @@ const dishesData = [
 ];
 
 function App() {
-  const [cart, setCart] = useState([]);
+  const { cart, add, remove, clear, total } = useCart();
   const [cartVisible, setCartVisible] = useState(false);
   const [addressVisible, setAddressVisible] = useState(false);
+  const [showAddressErrors, setShowAddressErrors] = useState(false);
   const [address, setAddress] = useState({
     cep: "",
     street: "",
@@ -110,30 +113,7 @@ function App() {
     state: "",
   });
 
-  // Carrega o carrinho do localStorage ao montar o componente
-  useEffect(() => {
-    try {
-      const saved = localStorage.getItem("lanchonete_cart");
-      if (saved) {
-        const parsed = JSON.parse(saved);
-        console.debug("[lanchonete] carregado do localStorage:", parsed);
-        setCart(parsed);
-      }
-    } catch (e) {
-      // se falhar, ignora e inicia com carrinho vazio
-      console.error("Erro ao carregar cart do localStorage", e);
-    }
-  }, []);
-
-  // Salva o carrinho no localStorage sempre que ele mudar
-  useEffect(() => {
-    try {
-      localStorage.setItem("lanchonete_cart", JSON.stringify(cart));
-      console.debug("[lanchonete] salvo no localStorage:", cart);
-    } catch (e) {
-      console.error("Erro ao salvar cart no localStorage", e);
-    }
-  }, [cart]);
+  useEffect(() => {}, []);
 
   function showToast(text, success = true) {
     const globalToast =
@@ -151,32 +131,17 @@ function App() {
       alert(text);
     }
   }
+  // persistence moved to useCart
 
   function addToCart(item) {
-    setCart((prev) => {
-      const found = prev.find((p) => p.name === item.name);
-      if (found)
-        return prev.map((p) =>
-          p.name === item.name ? { ...p, quantity: p.quantity + 1 } : p
-        );
-      return [...prev, { ...item, quantity: 1 }];
-    });
+    add(item);
     showToast("Produto adicionado com sucesso!", true);
   }
-
   function removeFromCart(name) {
-    setCart((prev) => {
-      const idx = prev.findIndex((p) => p.name === name);
-      if (idx === -1) return prev;
-      const item = prev[idx];
-      if (item.quantity > 1)
-        return prev.map((p) =>
-          p.name === name ? { ...p, quantity: p.quantity - 1 } : p
-        );
-      return prev.filter((p) => p.name !== name);
-    });
+    remove(name);
   }
 
+  const cartButtonRef = React.createRef();
   function openCart() {
     setCartVisible(true);
   }
@@ -190,6 +155,7 @@ function App() {
       return;
     }
     setCartVisible(false);
+    setShowAddressErrors(false);
     setAddressVisible(true);
   }
 
@@ -200,26 +166,10 @@ function App() {
 
   function handleCepBlur() {
     const cep = address.cep.replace(/\D/g, "");
-    if (cep.length === 8) {
-      fetch(`https://viacep.com.br/ws/${cep}/json/`)
-        .then((r) => r.json())
-        .then((data) => {
-          if (!data.erro) {
-            setAddress((a) => ({
-              ...a,
-              street: data.logradouro || "",
-              neighborhood: data.bairro || "",
-              city: data.localidade || "",
-              state: data.uf || "",
-            }));
-          } else {
-            alert("CEP não encontrado!");
-          }
-        })
-        .catch(() => alert("Erro ao buscar o CEP. Verifique sua conexão!"));
-    } else {
-      alert("CEP inválido! O CEP deve conter 8 dígitos.");
-    }
+    if (cep.length === 0) return;
+    fetchAddressByCep(cep)
+      .then((data) => setAddress((a) => ({ ...a, ...data })))
+      .catch((err) => alert(err.message));
   }
 
   function validateAddress() {
@@ -231,11 +181,12 @@ function App() {
 
   function checkout() {
     if (!validateAddress()) {
+      setShowAddressErrors(true);
       showToast("Por favor, preencha todos os campos obrigatórios!", false);
       return;
     }
 
-    const cartTotal = cart.reduce((s, it) => s + it.price * it.quantity, 0);
+    const cartTotal = total;
     const cartItems = cart
       .map(
         (item) =>
@@ -262,7 +213,7 @@ function App() {
 
   return (
     <div>
-      <Header onOpenCart={openCart} />
+      <Header onOpenCart={openCart} cartButtonRef={cartButtonRef} />
 
       <main id="content">
         <section id="home">
@@ -297,6 +248,7 @@ function App() {
             onClose={closeCart}
             onConfirm={confirmCart}
             onRemove={removeFromCart}
+            returnFocusRef={cartButtonRef}
           />
         )}
         {addressVisible && (
@@ -306,6 +258,8 @@ function App() {
             onReturn={returnAddress}
             onCheckout={checkout}
             onCepBlur={handleCepBlur}
+            returnFocusRef={cartButtonRef}
+            showErrors={showAddressErrors}
           />
         )}
       </main>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 export default function AddressModal({
   address,
@@ -6,7 +6,20 @@ export default function AddressModal({
   onReturn,
   onCheckout,
   onCepBlur,
+  returnFocusRef,
+  showErrors,
 }) {
+  const cepRef = useRef(null);
+
+  useEffect(() => {
+    const prevActive = document.activeElement;
+    if (cepRef.current) cepRef.current.focus();
+    return () => {
+      if (returnFocusRef && returnFocusRef.current)
+        returnFocusRef.current.focus();
+      else if (prevActive && prevActive.focus) prevActive.focus();
+    };
+  }, [returnFocusRef]);
   return (
     <section id="address" aria-label="Endereço de Entrega">
       <div
@@ -23,6 +36,7 @@ export default function AddressModal({
             id="input-cep"
             className="address-input"
             value={address.cep}
+            ref={cepRef}
             onChange={(e) =>
               setAddress((a) => ({
                 ...a,
@@ -34,7 +48,10 @@ export default function AddressModal({
           <p
             className="warning-text"
             id="cep-warn"
-            style={{ display: address.cep.trim() === "" ? "block" : "none" }}
+            style={{
+              display:
+                showErrors && address.cep.trim() === "" ? "block" : "none",
+            }}
           >
             Campo obrigatório!
           </p>
@@ -61,7 +78,10 @@ export default function AddressModal({
           <p
             className="warning-text"
             id="number-warn"
-            style={{ display: address.number.trim() === "" ? "block" : "none" }}
+            style={{
+              display:
+                showErrors && address.number.trim() === "" ? "block" : "none",
+            }}
           >
             Campo obrigatório!
           </p>

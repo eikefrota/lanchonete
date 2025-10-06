@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
-export default function CartModal({ cart, onClose, onConfirm, onRemove }) {
+export default function CartModal({
+  cart,
+  onClose,
+  onConfirm,
+  onRemove,
+  returnFocusRef,
+}) {
   const total = cart.reduce((s, it) => s + it.price * it.quantity, 0);
+  const firstButtonRef = useRef(null);
+
+  useEffect(() => {
+    const prevActive = document.activeElement;
+    // focus first actionable button inside modal
+    if (firstButtonRef.current) firstButtonRef.current.focus();
+    return () => {
+      if (returnFocusRef && returnFocusRef.current)
+        returnFocusRef.current.focus();
+      else if (prevActive && prevActive.focus) prevActive.focus();
+    };
+  }, [returnFocusRef]);
 
   return (
     <section id="cart" aria-label="Carrinho de Compras">
@@ -43,7 +61,7 @@ export default function CartModal({ cart, onClose, onConfirm, onRemove }) {
             </span>
           </p>
           <div className="cart-buttons">
-            <button id="close-cart-btn" onClick={onClose}>
+            <button id="close-cart-btn" onClick={onClose} ref={firstButtonRef}>
               Fechar
             </button>
             <button id="confirm-cart-btn" onClick={onConfirm}>
