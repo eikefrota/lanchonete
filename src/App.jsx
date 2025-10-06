@@ -8,6 +8,20 @@ import { fetchAddressByCep } from "./utils/viacep";
 
 import "./styles/style.css";
 
+import pizzaCalabresa from "./assets/pizza-calabresa.png";
+import pizzaCalabresa2 from "./assets/pizza-calabresa2.png";
+import pizzaBacon from "./assets/pizza-bacon.png";
+import pizzaMussarela from "./assets/pizza-mussarela.png";
+import pizzaPepperoni from "./assets/pizza-pepperoni.png";
+import hamb1 from "./assets/hambuguer-1.png";
+import hamb2 from "./assets/hambuguer-2.png";
+import hamb3 from "./assets/hamburguer-3.png";
+import hamb4 from "./assets/hambuguer-4.png";
+import coca from "./assets/coca.png";
+import guarana from "./assets/guarana.png";
+import sucoLaranja from "./assets/suco-laranja.png";
+import sucoMorango from "./assets/suco-morango.png";
+
 const dishesData = [
   {
     category: "Pizzas",
@@ -16,25 +30,25 @@ const dishesData = [
         name: "Pizza Calabresa",
         desc: "Molho artesanal, fatias de calabresa, cebola, orégano e massa crocante",
         price: 32,
-        img: "/images/pizza-calabresa2.png",
+        img: pizzaCalabresa2,
       },
       {
         name: "Pizza Bacon",
         desc: "Molho artesanal, pedaços crocantes de bacon, queijo derretido e toque de orégano",
         price: 30,
-        img: "/images/pizza-bacon.png",
+        img: pizzaBacon,
       },
       {
         name: "Pizza Mussarela",
         desc: "Molho artesanal, queijo derretido e um toque de orégano",
         price: 28,
-        img: "/images/pizza-mussarela.png",
+        img: pizzaMussarela,
       },
       {
         name: "Pizza Pepperoni",
         desc: "Molho artesanal, fatias de pepperoni levemente picantes, queijo derretido e orégano",
         price: 30,
-        img: "/images/pizza-pepperoni.png",
+        img: pizzaPepperoni,
       },
     ],
   },
@@ -45,25 +59,25 @@ const dishesData = [
         name: "Burguer Salad",
         desc: "Pão brioche, hambúrguer, queijo cheddar, alface, tomate e cebola roxa",
         price: 27,
-        img: "/images/hambuguer-1.png",
+        img: hamb1,
       },
       {
         name: "Double Bacon",
         desc: "Pão brioche, dois hambúrgueres, queijo cheddar, alface, tomate bacon",
         price: 30,
-        img: "/images/hambuguer-2.png",
+        img: hamb2,
       },
       {
         name: "Double Chicken",
         desc: "Pão brioche, duas fatias de frango, queijo cheddar, alface, tomate e cebola",
         price: 25,
-        img: "/images/hamburguer-3.png",
+        img: hamb3,
       },
       {
         name: "Picles Burguer",
         desc: "Pão brioche, hambúguer, dois queijos cheddar, alface e muito picles",
         price: 29,
-        img: "/images/hambuguer-4.png",
+        img: hamb4,
       },
     ],
   },
@@ -74,25 +88,25 @@ const dishesData = [
         name: "Coca-Cola",
         desc: "Lata 350ml",
         price: 5,
-        img: "/images/coca.png",
+        img: coca,
       },
       {
         name: "Guaraná Antartica",
         desc: "Lata 350ml",
         price: 5,
-        img: "/images/guarana.png",
+        img: guarana,
       },
       {
         name: "Suco de Laranja",
         desc: "Copo 350ml",
         price: 8,
-        img: "/images/suco-laranja.png",
+        img: sucoLaranja,
       },
       {
         name: "Suco de Morango",
         desc: "Copo 350ml",
         price: 8,
-        img: "/images/suco-morango.png",
+        img: sucoMorango,
       },
     ],
   },
@@ -235,7 +249,7 @@ function App() {
 
           <div id="banner">
             <div className="banner-image-container">
-              <img src="/images/pizza-calabresa.png" alt="Foto Pizza" />
+              <img src={pizzaCalabresa} alt="Foto Pizza" />
             </div>
           </div>
         </section>
