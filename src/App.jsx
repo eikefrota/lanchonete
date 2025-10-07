@@ -161,7 +161,7 @@ function App() {
     remove(name);
   }
 
-  const cartButtonRef = React.createRef();
+  const cartButtonRef = React.useRef(null);
   function openCart() {
     setCartVisible(true);
   }
@@ -184,9 +184,10 @@ function App() {
     setCartVisible(true);
   }
 
-  function handleCepBlur() {
-    const cep = address.cep.replace(/\D/g, "");
-    if (cep.length === 0) return;
+  // Accept cep as parameter to avoid race conditions when input changes
+  function handleCepBlur(cepParam) {
+    const cep = (cepParam || address.cep || "").replace(/\D/g, "");
+    if (cep.length !== 8) return;
     fetchAddressByCep(cep)
       .then((data) => setAddress((a) => ({ ...a, ...data })))
       .catch((err) => showToast(err.message, false));

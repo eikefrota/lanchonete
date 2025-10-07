@@ -10,7 +10,35 @@ export default function AddressModal({
   showErrors,
 }) {
   const cepRef = useRef(null);
+  const numberRef = useRef(null);
   const [touched, setTouched] = useState({ cep: false, number: false });
+  const [focused, setFocused] = useState({ cep: false, number: false });
+
+  function formatCepForDisplay(cepDigits) {
+    const d = (cepDigits || "").replace(/\D/g, "");
+    if (!d) return "";
+    if (d.length <= 5) return d;
+    return `${d.slice(0, 5)}-${d.slice(5, 8)}`;
+  }
+
+  // keep previous street to detect when CEP lookup populated the street
+  const prevStreet = useRef(address.street);
+
+  useEffect(() => {
+    // if previously empty and now filled, and number empty -> focus number
+    if (
+      (!prevStreet.current || prevStreet.current.trim() === "") &&
+      address.street &&
+      address.street.trim() !== "" &&
+      numberRef.current &&
+      !focused.number &&
+      (!address.number || address.number.trim() === "")
+    ) {
+      // focus number input
+      numberRef.current.focus();
+    }
+    prevStreet.current = address.street;
+  }, [address.street, address.number, focused.number]);
 
   useEffect(() => {
     const prevActive = document.activeElement;
@@ -36,19 +64,19 @@ export default function AddressModal({
             type="text"
             id="input-cep"
             className="address-input"
-            value={address.cep}
+            value={formatCepForDisplay(address.cep)}
             ref={cepRef}
-            onChange={(e) =>
-              setAddress((a) => ({
-                ...a,
-                cep: e.target.value.replace(/\D/g, "").slice(0, 8),
-              }))
-            }
+            onChange={(e) => {
+              const digits = e.target.value.replace(/\D/g, "").slice(0, 8);
+              setAddress((a) => ({ ...a, cep: digits }));
+            }}
+            onFocus={() => setFocused((f) => ({ ...f, cep: true }))}
             onBlur={(e) => {
+              setFocused((f) => ({ ...f, cep: false }));
               setTouched((t) => ({ ...t, cep: true }));
               const cep = e.target.value.replace(/\D/g, "");
               // Only trigger lookup when CEP is complete (8 digits)
-              if (cep.length === 8) onCepBlur();
+              if (cep.length === 8) onCepBlur(cep);
             }}
           />
           <p
@@ -56,7 +84,9 @@ export default function AddressModal({
             id="cep-warn"
             style={{
               display:
-                (showErrors || touched.cep) && address.cep.trim() === ""
+                (showErrors || touched.cep) &&
+                !focused.cep &&
+                address.cep.trim() === ""
                   ? "block"
                   : "none",
             }}
@@ -78,18 +108,25 @@ export default function AddressModal({
             type="text"
             id="input-number"
             className="address-input"
+            ref={numberRef}
             value={address.number}
             onChange={(e) =>
               setAddress((a) => ({ ...a, number: e.target.value }))
             }
-            onBlur={() => setTouched((t) => ({ ...t, number: true }))}
+            onFocus={() => setFocused((f) => ({ ...f, number: true }))}
+            onBlur={() => {
+              setFocused((f) => ({ ...f, number: false }));
+              setTouched((t) => ({ ...t, number: true }));
+            }}
           />
           <p
             className="warning-text"
             id="number-warn"
             style={{
               display:
-                (showErrors || touched.number) && address.number.trim() === ""
+                (showErrors || touched.number) &&
+                !focused.number &&
+                address.number.trim() === ""
                   ? "block"
                   : "none",
             }}
