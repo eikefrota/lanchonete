@@ -13,6 +13,8 @@
   margin: 50px auto;
   padding: 0 8px;
   text-align: center;
+  /* ensure anchor targets appear below the sticky header */
+  scroll-margin-top: 120px;
 }
 
 /* group wrapper to keep title + grid aligned and centered */
@@ -32,6 +34,12 @@
   max-width: 1200px;
   margin: 40px auto;
   padding: 0 8px;
+}
+
+/* if anchor targets are the group wrappers, ensure they are offset below sticky header */
+#menu > div,
+#menu > div > div {
+  scroll-margin-top: 120px;
 }
 
 .dishes {

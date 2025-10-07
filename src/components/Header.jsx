@@ -25,7 +25,13 @@ export default function Header({
             <a href="#home">Início</a>
           </li>
           <li className="nav-item">
-            <a href="#menu">Cardápio</a>
+            <a href="#pizzas">Pizzas</a>
+          </li>
+          <li className="nav-item">
+            <a href="#hambugueres">Hambúgueres</a>
+          </li>
+          <li className="nav-item">
+            <a href="#bebidas">Bebidas</a>
           </li>
         </ul>
 
@@ -66,7 +72,13 @@ export default function Header({
             <a href="#home">Início</a>
           </li>
           <li className="nav-item">
-            <a href="#menu">Cardápio</a>
+            <a href="#pizzas">Pizzas</a>
+          </li>
+          <li className="nav-item">
+            <a href="#hambugueres">Hambúgueres</a>
+          </li>
+          <li className="nav-item">
+            <a href="#bebidas">Bebidas</a>
           </li>
         </ul>
 
