@@ -1,23 +1,47 @@
+/* Make the menu section span full width but keep content constrained
+   so titles and grids line up with the rest of the page. */
 #menu {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  display: block;
   min-height: 100vh;
 }
 
 .section-subtitle {
   color: #1d1d1dad;
   font-size: 45px;
-  margin-top: 50px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 50px auto;
+  padding: 0 8px;
+  text-align: center;
+}
+
+/* group wrapper to keep title + grid aligned and centered */
+.menu-group {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto 48px auto;
+  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* container used to keep the grid aligned with the subtitle and page padding */
+.menu-row {
+  width: 100%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 0 8px;
 }
 
 .dishes {
   width: 100%;
   display: flex;
-  justify-content: center;
   gap: 24px;
   margin-top: 35px;
+  align-items: flex-start;
+  justify-content: flex-start; /* align items to the left so grid lines up under the title */
+  flex-wrap: wrap;
 }
 
 .dish {
@@ -26,11 +50,20 @@
   align-items: center;
   border-radius: 20px;
   gap: 12px;
-  width: 25%;
+  /* use a flexible basis so items wrap predictably */
+  flex: 0 1 calc(25% - 24px);
   padding: 20px;
   background-color: #ffffff;
   box-shadow: 0px 0px 12px 4px rgba(0, 0, 0, 0.1);
   position: relative;
+}
+
+/* make all cards the same height and ensure price stays at bottom */
+.dish {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* push price to bottom */
+  height: 540px; /* fixed card height - adjust if needed */
 }
 
 .dish-heart {
@@ -63,9 +96,15 @@
   font-size: 25px;
 }
 
+/* limit description so it doesn't expand card height */
 .dish-description {
   color: #1d1d1dad;
   text-align: center;
+  display: -webkit-box;
+  -webkit-line-clamp: 3; /* show max 3 lines */
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .dish-price {
@@ -104,11 +143,13 @@
 
   .dish {
     width: calc(50% - 12px);
+    height: 520px; /* slightly smaller on narrower screens */
   }
 }
 
 @media screen and (max-width: 630px) {
   .dish {
     width: 100%;
+    height: auto; /* allow natural height on very small screens */
   }
 }
