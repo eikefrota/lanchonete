@@ -291,8 +291,81 @@ function App() {
       </main>
 
       <footer>
-        <div id="footer-items">
-          <span id="copyright">&copy; 2025 Todos os direitos reservados</span>
+        <div className="footer-container">
+          <div className="footer-grid">
+            <div className="footer-brand">
+              <i className="fa-solid fa-burger" id="footer-logo">
+                {" "}
+                Frota
+              </i>
+              <p className="footer-desc">
+                O melhor sabor da cidade. Pizzas, hambúgueres e bebidas geladas
+                entregues rápido.
+              </p>
+              <div className="footer-socials">
+                <a href="#" aria-label="Instagram">
+                  <i className="fa-brands fa-instagram"></i>
+                </a>
+                <a href="#" aria-label="Facebook">
+                  <i className="fa-brands fa-facebook"></i>
+                </a>
+                <a href="#" aria-label="WhatsApp">
+                  <i className="fa-brands fa-whatsapp"></i>
+                </a>
+              </div>
+            </div>
+
+            <div className="footer-links">
+              <h4>Links rápidos</h4>
+              <ul>
+                <li>
+                  <a href="#home">Início</a>
+                </li>
+                <li>
+                  <a href="#pizzas">Pizzas</a>
+                </li>
+                <li>
+                  <a href="#hambugueres">Hambúgueres</a>
+                </li>
+                <li>
+                  <a href="#bebidas">Bebidas</a>
+                </li>
+              </ul>
+            </div>
+
+            <div className="footer-contact">
+              <h4>Contato</h4>
+              <address>
+                Rua Exemplo, 123
+                <br />
+                Cidade - Estado
+                <br />
+                <a href="tel:+5585999062339">(85) 99906-2339</a>
+              </address>
+            </div>
+
+            <div className="footer-newsletter">
+              <h4>Newsletter</h4>
+              <p>Receba promoções e novidades por e-mail.</p>
+              <form
+                onSubmit={(e) => e.preventDefault()}
+                className="newsletter-form"
+              >
+                <input
+                  type="email"
+                  placeholder="Seu e-mail"
+                  aria-label="Seu e-mail"
+                />
+                <button type="submit">Inscrever</button>
+              </form>
+            </div>
+          </div>
+
+          <div className="footer-bottom">
+            <span className="footer-copyright">
+              &copy; 2025 Frota. Todos os direitos reservados.
+            </span>
+          </div>
         </div>
       </footer>
     </div>
