@@ -22,7 +22,16 @@ export default function Header({
 
         <ul id="nav-list">
           <li className="nav-item">
-            <a href="#home">Início</a>
+            <a
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                setMobileActive(false);
+              }}
+            >
+              Início
+            </a>
           </li>
           <li className="nav-item">
             <a href="#pizzas">Pizzas</a>
@@ -69,7 +78,16 @@ export default function Header({
       >
         <ul id="mobile-nav-list">
           <li className="nav-item">
-            <a href="#home">Início</a>
+            <a
+              href="#home"
+              onClick={(e) => {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: "smooth" });
+                setMobileActive(false);
+              }}
+            >
+              Início
+            </a>
           </li>
           <li className="nav-item">
             <a href="#pizzas">Pizzas</a>
