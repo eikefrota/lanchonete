@@ -51,6 +51,12 @@
 .dish-image {
   height: 250px;
   width: 250px;
+  object-fit: cover;
+  transition: transform 150ms ease;
+}
+
+.dish-image[loading="lazy"] {
+  filter: blur(0.2px);
 }
 
 .dish-title {

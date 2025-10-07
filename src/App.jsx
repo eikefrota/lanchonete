@@ -113,7 +113,8 @@ const dishesData = [
 ];
 
 function App() {
-  const { cart, add, remove, clear, total } = useCart();
+  const { cart, add, remove, clear, total, totalQuantity } = useCart();
+  const [cartBump, setCartBump] = useState(false);
   const [cartVisible, setCartVisible] = useState(false);
   const [addressVisible, setAddressVisible] = useState(false);
   const [showAddressErrors, setShowAddressErrors] = useState(false);
@@ -142,7 +143,9 @@ function App() {
         style: { background: success ? "green" : "#EF4444" },
       }).showToast();
     } else {
-      alert(text);
+      // non-blocking fallback
+      if (success) console.log(text);
+      else console.warn(text);
     }
   }
   // persistence moved to useCart
@@ -150,6 +153,9 @@ function App() {
   function addToCart(item) {
     add(item);
     showToast("Produto adicionado com sucesso!", true);
+    // trigger bump animation on cart button
+    setCartBump(true);
+    setTimeout(() => setCartBump(false), 300);
   }
   function removeFromCart(name) {
     remove(name);
@@ -183,7 +189,7 @@ function App() {
     if (cep.length === 0) return;
     fetchAddressByCep(cep)
       .then((data) => setAddress((a) => ({ ...a, ...data })))
-      .catch((err) => alert(err.message));
+      .catch((err) => showToast(err.message, false));
   }
 
   function validateAddress() {
@@ -221,13 +227,18 @@ function App() {
     );
     const phone = "+5585999062339";
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
-    setCart([]);
+    clear();
     setAddressVisible(false);
   }
 
   return (
     <div>
-      <Header onOpenCart={openCart} cartButtonRef={cartButtonRef} />
+      <Header
+        onOpenCart={openCart}
+        cartButtonRef={cartButtonRef}
+        cartQuantity={totalQuantity}
+        cartBump={cartBump}
+      />
 
       <main id="content">
         <section id="home">

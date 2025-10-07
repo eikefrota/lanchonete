@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 export default function AddressModal({
   address,
@@ -10,6 +10,7 @@ export default function AddressModal({
   showErrors,
 }) {
   const cepRef = useRef(null);
+  const [touched, setTouched] = useState({ cep: false, number: false });
 
   useEffect(() => {
     const prevActive = document.activeElement;
@@ -43,14 +44,21 @@ export default function AddressModal({
                 cep: e.target.value.replace(/\D/g, "").slice(0, 8),
               }))
             }
-            onBlur={onCepBlur}
+            onBlur={(e) => {
+              setTouched((t) => ({ ...t, cep: true }));
+              const cep = e.target.value.replace(/\D/g, "");
+              // Only trigger lookup when CEP is complete (8 digits)
+              if (cep.length === 8) onCepBlur();
+            }}
           />
           <p
             className="warning-text"
             id="cep-warn"
             style={{
               display:
-                showErrors && address.cep.trim() === "" ? "block" : "none",
+                (showErrors || touched.cep) && address.cep.trim() === ""
+                  ? "block"
+                  : "none",
             }}
           >
             Campo obrigatório!
@@ -74,13 +82,16 @@ export default function AddressModal({
             onChange={(e) =>
               setAddress((a) => ({ ...a, number: e.target.value }))
             }
+            onBlur={() => setTouched((t) => ({ ...t, number: true }))}
           />
           <p
             className="warning-text"
             id="number-warn"
             style={{
               display:
-                showErrors && address.number.trim() === "" ? "block" : "none",
+                (showErrors || touched.number) && address.number.trim() === ""
+                  ? "block"
+                  : "none",
             }}
           >
             Campo obrigatório!

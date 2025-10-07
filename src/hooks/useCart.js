@@ -45,6 +45,7 @@ export default function useCart() {
   }
 
   const total = cart.reduce((s, it) => s + it.price * it.quantity, 0);
+  const totalQuantity = cart.reduce((s, it) => s + it.quantity, 0);
 
-  return { cart, add, remove, clear, total };
+  return { cart, add, remove, clear, total, totalQuantity };
 }

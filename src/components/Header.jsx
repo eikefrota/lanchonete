@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 
-export default function Header({ onOpenCart, cartButtonRef }) {
+export default function Header({
+  onOpenCart,
+  cartButtonRef,
+  cartQuantity = 0,
+  cartBump = false,
+}) {
   const [mobileActive, setMobileActive] = useState(false);
 
   function toggleMobile() {
@@ -29,8 +34,16 @@ export default function Header({ onOpenCart, cartButtonRef }) {
           onClick={onOpenCart}
           ref={cartButtonRef}
           aria-haspopup="dialog"
+          className={cartBump ? "cart-bump" : ""}
         >
-          <i className="fa-solid fa-bag-shopping"></i>Carrinho
+          <i className="fa-solid fa-bag-shopping"></i>
+          Carrinho
+          <span
+            className="cart-badge"
+            aria-label={`${cartQuantity} itens no carrinho`}
+          >
+            {cartQuantity}
+          </span>
         </button>
 
         <button
@@ -58,7 +71,9 @@ export default function Header({ onOpenCart, cartButtonRef }) {
         </ul>
 
         <button id="btn-cart-mobile" onClick={onOpenCart}>
-          <i className="fa-solid fa-bag-shopping"></i>Carrinho
+          <i className="fa-solid fa-bag-shopping"></i>
+          Carrinho
+          <span className="cart-badge">{cartQuantity}</span>
         </button>
       </div>
     </header>
