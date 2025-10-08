@@ -211,7 +211,7 @@ export default function AddressModal({
               onClick={onCheckout}
               disabled={cepLoading}
             >
-              {cepLoading ? "Aguardando CEP..." : "Finalizar pedido"}
+              {cepLoading ? "Aguardando CEP..." : "Pagamento"}
             </button>
           </div>
         </div>

@@ -1,0 +1,128 @@
+.already-changed-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(2, 6, 23, 0.04);
+  min-width: 140px;
+}
+
+.already-changed-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+}
+
+.already-changed-btn.active {
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.12);
+}
+
+#return-payment-btn {
+  background-color: #f0f0f0;
+  color: #333;
+}
+
+#confirm-payment-btn {
+  background-color: #22c55e;
+  color: white;
+  font-weight: bold;
+}
+
+/* Pills for payment options */
+.payment-methods {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.payment-pill {
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid #d1d5db;
+  background: white;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.payment-pill.selected {
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  color: white;
+  border-color: transparent;
+}
+
+.payment-pill i {
+  width: 18px;
+  text-align: center;
+}
+
+.payment-pill:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
+}
+
+.payment-methods input[type="text"],
+.payment-methods input[type="number"] {
+  width: 100%;
+}
+
+.already-changed-btn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  cursor: pointer;
+}
+
+.already-changed-btn.active {
+  background: #f1f5f9;
+  border-color: #94a3b8;
+}
+
+.already-changed-btn {
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+
+.already-changed-btn:active {
+  transform: scale(0.98);
+}
+
+/* Enhanced styling for Already-changed button */
+.already-changed-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  border: 1px solid #e2e8f0;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  color: #0f172a;
+  font-weight: 600;
+  box-shadow: 0 1px 2px rgba(2, 6, 23, 0.04);
+}
+
+.already-changed-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(2, 6, 23, 0.08);
+}
+
+.already-changed-btn.active {
+  background: linear-gradient(90deg, #10b981, #06b6d4);
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 10px 30px rgba(6, 182, 212, 0.12);
+}
+
+/* pseudo-element removed to avoid duplicate check; FontAwesome icon used in JSX */
+
+.address-input[disabled] {
+  opacity: 0.8;
+  background: #f9fafb;
+}

@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import Menu from "./components/Menu";
 import CartModal from "./components/CartModal";
 import AddressModal from "./components/AddressModal";
+import PaymentModal from "./components/PaymentModal";
 import useCart from "./hooks/useCart";
 import { fetchAddressByCep } from "./utils/viacep";
 
@@ -173,6 +174,7 @@ function App() {
     useCart();
   const [cartBump, setCartBump] = useState(false);
   const [cartVisible, setCartVisible] = useState(false);
+  const [paymentVisible, setPaymentVisible] = useState(false);
   const [addressVisible, setAddressVisible] = useState(false);
   const [showAddressErrors, setShowAddressErrors] = useState(false);
   const [address, setAddress] = useState({
@@ -183,6 +185,8 @@ function App() {
     neighborhood: "",
     city: "",
     state: "",
+    paymentMethod: "",
+    changeFor: "",
   });
 
   useEffect(() => {}, []);
@@ -241,6 +245,21 @@ function App() {
     setCartVisible(true);
   }
 
+  function openAddressFromPayment() {
+    setPaymentVisible(false);
+    setAddressVisible(true);
+  }
+
+  function returnPayment() {
+    setPaymentVisible(false);
+    setCartVisible(true);
+  }
+
+  function openPaymentFromAddress() {
+    setAddressVisible(false);
+    setPaymentVisible(true);
+  }
+
   // Accept cep as parameter to avoid race conditions when input changes
   function handleCepBlur(cepParam) {
     const cep = (cepParam || address.cep || "").replace(/\D/g, "");
@@ -294,7 +313,15 @@ function App() {
       address.cep
     }`;
 
-    const plainMessage = `🍽️ *Novo pedido — FastDish* ${orderId}\n🕒 ${datetime}\n━━━━━━━━━━━━━━━━━━━━\n*Itens:*\n${cartLines}\n━━━━━━━━━━━━━━━━━━━━\n*Resumo:* ${totalMsg}\n\n*Entrega:*\n${addressLines}\n\n_Pagamento: A combinar_\n\n*Obrigado!* 🙌\n`;
+    const paymentInfo = address.paymentMethod
+      ? `*Pagamento:* ${address.paymentMethod}${
+          address.paymentMethod === "Dinheiro" && address.changeFor
+            ? ` — Troco para: ${address.changeFor}`
+            : ""
+        }`
+      : "*Pagamento:* Não especificado";
+
+    const plainMessage = `🍽️ *Novo pedido — FastDish* ${orderId}\n🕒 ${datetime}\n━━━━━━━━━━━━━━━━━━━━\n*Itens:*\n${cartLines}\n━━━━━━━━━━━━━━━━━━━━\n*Resumo:* ${totalMsg}\n\n*Entrega:*\n${addressLines}\n\n${paymentInfo}\n\n*Obrigado!* 🙌\n`;
 
     const message = encodeURIComponent(plainMessage);
     const phone = "+5585999062339";
@@ -350,12 +377,23 @@ function App() {
             returnFocusRef={cartButtonRef}
           />
         )}
+        {paymentVisible && (
+          <PaymentModal
+            address={address}
+            setAddress={setAddress}
+            onReturn={openAddressFromPayment}
+            onConfirm={checkout}
+            returnFocusRef={cartButtonRef}
+            cart={cart}
+            total={total}
+          />
+        )}
         {addressVisible && (
           <AddressModal
             address={address}
             setAddress={setAddress}
             onReturn={returnAddress}
-            onCheckout={checkout}
+            onCheckout={openPaymentFromAddress}
             onCepBlur={handleCepBlur}
             returnFocusRef={cartButtonRef}
             showErrors={showAddressErrors}
