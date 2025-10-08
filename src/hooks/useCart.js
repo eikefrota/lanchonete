@@ -40,6 +40,10 @@ export default function useCart() {
     });
   }
 
+  function removeAll(name) {
+    setCart((prev) => prev.filter((p) => p.name !== name));
+  }
+
   function clear() {
     setCart([]);
   }
@@ -47,5 +51,5 @@ export default function useCart() {
   const total = cart.reduce((s, it) => s + it.price * it.quantity, 0);
   const totalQuantity = cart.reduce((s, it) => s + it.quantity, 0);
 
-  return { cart, add, remove, clear, total, totalQuantity };
+  return { cart, add, remove, removeAll, clear, total, totalQuantity };
 }

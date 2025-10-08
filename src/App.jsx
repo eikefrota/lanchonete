@@ -169,7 +169,8 @@ const dishesData = [
 ];
 
 function App() {
-  const { cart, add, remove, clear, total, totalQuantity } = useCart();
+  const { cart, add, remove, removeAll, clear, total, totalQuantity } =
+    useCart();
   const [cartBump, setCartBump] = useState(false);
   const [cartVisible, setCartVisible] = useState(false);
   const [addressVisible, setAddressVisible] = useState(false);
@@ -262,26 +263,40 @@ function App() {
       showToast("Por favor, preencha todos os campos obrigatórios!", false);
       return;
     }
+    const now = new Date();
+    const datetime = now.toLocaleString("pt-BR");
+    const orderId = `#${String(now.getTime()).slice(-6)}`;
 
-    const cartTotal = total;
-    const cartItems = cart
-      .map(
-        (item) =>
-          `\n*${item.name}*\n*Quantidade:* ${item.quantity}\n*Preço:* R$${item.price}\n-------------------------------------------\n`
-      )
-      .join("");
-    const totalMessage = `*VALOR TOTAL:* R$ ${cartTotal.toLocaleString(
-      "pt-BR",
-      { style: "currency", currency: "BRL" }
-    )}\n`;
-    const addressMessage = `*ENDEREÇO DE ENTREGA:* ${address.street}, ${
-      address.number
-    }, ${address.complement || "N/A"} - ${address.neighborhood}, ${
-      address.city
-    }-${address.state}, ${address.cep}`;
-    const message = encodeURIComponent(
-      `\n${cartItems}\n${totalMessage}\n${addressMessage}`
-    );
+    const cartLines = cart
+      .map((item, idx) => {
+        const unit = item.price.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+        const lineTotal = (item.price * item.quantity).toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+        });
+        return `${idx + 1}. ${item.name} — ${
+          item.quantity
+        } x ${unit} = ${lineTotal}`;
+      })
+      .join("\n");
+
+    const totalMsg = total.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+    });
+
+    const addressLines = `${address.street}, ${address.number}${
+      address.complement ? ` — ${address.complement}` : ""
+    }\n${address.neighborhood} — ${address.city}-${address.state}\nCEP: ${
+      address.cep
+    }`;
+
+    const plainMessage = `🍽️ *Novo pedido — FastDish* ${orderId}\n🕒 ${datetime}\n━━━━━━━━━━━━━━━━━━━━\n*Itens:*\n${cartLines}\n━━━━━━━━━━━━━━━━━━━━\n*Resumo:* ${totalMsg}\n\n*Entrega:*\n${addressLines}\n\n_Pagamento: A combinar_\n\n*Obrigado!* 🙌\n`;
+
+    const message = encodeURIComponent(plainMessage);
     const phone = "+5585999062339";
     window.open(`https://wa.me/${phone}?text=${message}`, "_blank");
     clear();
@@ -330,6 +345,8 @@ function App() {
             onClose={closeCart}
             onConfirm={confirmCart}
             onRemove={removeFromCart}
+            onAdd={add}
+            removeAll={removeAll}
             returnFocusRef={cartButtonRef}
           />
         )}

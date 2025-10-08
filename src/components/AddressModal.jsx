@@ -13,6 +13,8 @@ export default function AddressModal({
   const numberRef = useRef(null);
   const [touched, setTouched] = useState({ cep: false, number: false });
   const [focused, setFocused] = useState({ cep: false, number: false });
+  const [cepLoading, setCepLoading] = useState(false);
+  const [cepError, setCepError] = useState("");
 
   function formatCepForDisplay(cepDigits) {
     const d = (cepDigits || "").replace(/\D/g, "");
@@ -34,7 +36,6 @@ export default function AddressModal({
       !focused.number &&
       (!address.number || address.number.trim() === "")
     ) {
-      // focus number input
       numberRef.current.focus();
     }
     prevStreet.current = address.street;
@@ -43,12 +44,28 @@ export default function AddressModal({
   useEffect(() => {
     const prevActive = document.activeElement;
     if (cepRef.current) cepRef.current.focus();
+
     return () => {
       if (returnFocusRef && returnFocusRef.current)
         returnFocusRef.current.focus();
       else if (prevActive && prevActive.focus) prevActive.focus();
     };
   }, [returnFocusRef]);
+
+  async function handleCepBlur(cep) {
+    // cep argument is digits-only
+    setCepLoading(true);
+    setCepError("");
+    try {
+      const res = onCepBlur ? onCepBlur(cep) : null;
+      if (res && typeof res.then === "function") await res;
+    } catch (err) {
+      setCepError(err?.message || "Erro ao buscar CEP");
+    } finally {
+      setCepLoading(false);
+    }
+  }
+
   return (
     <section id="address" aria-label="Endereço de Entrega">
       <div
@@ -56,7 +73,7 @@ export default function AddressModal({
         id="address-modal"
         style={{ display: "flex" }}
       >
-        <div className="address-container">
+        <div className="address-container" role="dialog" aria-modal="true">
           <h2 className="address-title">ENDEREÇO</h2>
 
           <p className="address-label">CEP</p>
@@ -75,10 +92,10 @@ export default function AddressModal({
               setFocused((f) => ({ ...f, cep: false }));
               setTouched((t) => ({ ...t, cep: true }));
               const cep = e.target.value.replace(/\D/g, "");
-              // Only trigger lookup when CEP is complete (8 digits)
-              if (cep.length === 8) onCepBlur(cep);
+              if (cep.length === 8) handleCepBlur(cep);
             }}
           />
+
           <p
             className="warning-text"
             id="cep-warn"
@@ -92,6 +109,19 @@ export default function AddressModal({
             }}
           >
             Campo obrigatório!
+          </p>
+
+          <p
+            className="warning-text"
+            style={{ display: cepLoading ? "block" : "none" }}
+          >
+            Buscando endereço...
+          </p>
+          <p
+            className="warning-text"
+            style={{ display: cepError ? "block" : "none" }}
+          >
+            {cepError}
           </p>
 
           <p className="address-label">Rua</p>
@@ -176,8 +206,12 @@ export default function AddressModal({
             <button id="return-address-btn" onClick={onReturn}>
               Voltar
             </button>
-            <button id="checkout-btn" onClick={onCheckout}>
-              Finalizar pedido
+            <button
+              id="checkout-btn"
+              onClick={onCheckout}
+              disabled={cepLoading}
+            >
+              {cepLoading ? "Aguardando CEP..." : "Finalizar pedido"}
             </button>
           </div>
         </div>
