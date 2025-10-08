@@ -28,6 +28,105 @@
   align-items: center;
 }
 
+/* Carousel styles */
+.carousel {
+  width: 100%;
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.carousel-track {
+  display: flex;
+  gap: 24px;
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+  padding: 12px 8px;
+  scroll-snap-type: x mandatory;
+  width: 100%;
+  /* modern soft fade on the sides using a mask */
+  mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent 0%,
+    black 3%,
+    black 97%,
+    transparent 100%
+  );
+
+  /* hide native scrollbar */
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE 10+ */
+}
+
+.carousel-track::-webkit-scrollbar {
+  display: none; /* Safari/WebKit */
+}
+
+.carousel-track.is-dragging {
+  cursor: grabbing;
+}
+
+.carousel-cell {
+  scroll-snap-align: start;
+  flex: 0 0 calc(25% - 24px);
+  display: flex;
+  justify-content: center;
+  transition: transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1), box-shadow 220ms;
+}
+
+.carousel-cell:hover {
+  transform: translateY(-6px) scale(1.02);
+  z-index: 5;
+}
+
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10;
+  transition: transform 180ms, background 180ms;
+  opacity: 0.85;
+}
+
+.carousel-btn:hover {
+  transform: translateY(-50%) scale(1.04);
+  opacity: 1;
+}
+
+.carousel-btn-left {
+  left: 6px;
+}
+.carousel-btn-right {
+  right: 6px;
+}
+
+.carousel-btn i {
+  color: #444;
+  font-size: 14px;
+}
+
+.carousel-dots {
+  display: none;
+}
+
 /* container used to keep the grid aligned with the subtitle and page padding */
 .menu-row {
   width: 100%;
@@ -102,6 +201,8 @@
 
 .dish-title {
   font-size: 25px;
+  text-align: center;
+  margin: 0 auto;
 }
 
 /* limit description so it doesn't expand card height */
@@ -149,6 +250,10 @@
     justify-content: center;
   }
 
+  .carousel-cell {
+    flex: 0 0 calc(50% - 24px);
+  }
+
   .dish {
     width: calc(50% - 12px);
     height: 520px; /* slightly smaller on narrower screens */
@@ -159,5 +264,9 @@
   .dish {
     width: 100%;
     height: auto; /* allow natural height on very small screens */
+  }
+
+  .carousel-cell {
+    flex: 0 0 100%;
   }
 }

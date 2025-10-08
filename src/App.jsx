@@ -13,10 +13,16 @@ import pizzaCalabresa2 from "./assets/pizza-calabresa2.png";
 import pizzaBacon from "./assets/pizza-bacon.png";
 import pizzaMussarela from "./assets/pizza-mussarela.png";
 import pizzaPepperoni from "./assets/pizza-pepperoni.png";
+import pizzaPresunto from "./assets/pizza-presunto-e-queijo.png";
+import pizzaCogumelo from "./assets/pizza-cogumelo.png";
+import pizzaCogCalabresa from "./assets/pizza-cogumelo-e-calabresa.png";
 import hamb1 from "./assets/hambuguer-1.png";
 import hamb2 from "./assets/hambuguer-2.png";
 import hamb3 from "./assets/hamburguer-3.png";
 import hamb4 from "./assets/hambuguer-4.png";
+import hambChicken from "./assets/hamburguer-chicken.png";
+import sanduicheBife from "./assets/sanduiche-bife.png";
+import sanduicheIntegral from "./assets/sanduiche-integral.png";
 import coca from "./assets/coca.png";
 import guarana from "./assets/guarana.png";
 import sucoLaranja from "./assets/suco-laranja.png";
@@ -50,6 +56,24 @@ const dishesData = [
         price: 30,
         img: pizzaPepperoni,
       },
+      {
+        name: "Pizza Presunto e Queijo",
+        desc: "Fatias generosas de presunto com queijo derretido e massa macia",
+        price: 31,
+        img: pizzaPresunto,
+      },
+      {
+        name: "Pizza Cogumelo",
+        desc: "Cogumelos salteados com queijo cremoso e um toque de ervas",
+        price: 33,
+        img: pizzaCogumelo,
+      },
+      {
+        name: "Pizza Calabresa com Cogumelo",
+        desc: "Combinação de calabresa e cogumelos sobre molho especial",
+        price: 34,
+        img: pizzaCogCalabresa,
+      },
     ],
   },
   {
@@ -78,6 +102,24 @@ const dishesData = [
         desc: "Pão brioche, hambúguer, dois queijos cheddar, alface e muito picles",
         price: 29,
         img: hamb4,
+      },
+      {
+        name: "Chicken Crocante",
+        desc: "Peito de frango empanado, alface crocante e molho especial no pão brioche",
+        price: 26,
+        img: hambChicken,
+      },
+      {
+        name: "Sub de Bife",
+        desc: "Pão baguete recheado com tiras de bife, queijo e pimentões grelhados",
+        price: 34,
+        img: sanduicheBife,
+      },
+      {
+        name: "Sanduíche Integral",
+        desc: "Pão integral com presunto, queijo, alface e tomate — opção mais leve",
+        price: 24,
+        img: sanduicheIntegral,
       },
     ],
   },
