@@ -63,12 +63,14 @@ function CarouselGroup({ id, title, items, onAdd }) {
     } else {
       imgs.forEach((img) => {
         if (img.complete) loaded++;
-        else img.addEventListener("load", () => {
-          loaded++;
-          if (loaded === imgs.length) setToMiddle(false);
-        });
+        else
+          img.addEventListener("load", () => {
+            loaded++;
+            if (loaded === imgs.length) setToMiddle(false);
+          });
       });
-      if (loaded === imgs.length) requestAnimationFrame(() => setToMiddle(false));
+      if (loaded === imgs.length)
+        requestAnimationFrame(() => setToMiddle(false));
       // fallback: ensure middle is set after a short timeout
       const t = setTimeout(() => setToMiddle(false), 500);
       // cleanup

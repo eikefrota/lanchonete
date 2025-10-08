@@ -27,6 +27,8 @@ import coca from "./assets/coca.png";
 import guarana from "./assets/guarana.png";
 import sucoLaranja from "./assets/suco-laranja.png";
 import sucoMorango from "./assets/suco-morango.png";
+import milkshakeChocolate from "./assets/milkshake-chocolate.png";
+import milkshakeMorango from "./assets/milkshake-morango.png";
 
 const dishesData = [
   {
@@ -149,6 +151,18 @@ const dishesData = [
         desc: "Copo 350ml",
         price: 8,
         img: sucoMorango,
+      },
+      {
+        name: "Milkshake Chocolate",
+        desc: "Copo 500ml",
+        price: 12,
+        img: milkshakeChocolate,
+      },
+      {
+        name: "Milkshake Morango",
+        desc: "Copo 500ml",
+        price: 12,
+        img: milkshakeMorango,
       },
     ],
   },
