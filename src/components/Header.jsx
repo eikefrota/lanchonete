@@ -17,7 +17,7 @@ export default function Header({
       <nav id="nav-bar">
         <i className="fa-solid fa-burger" id="nav-logo">
           {" "}
-          Frota
+          FastDish
         </i>
 
         <ul id="nav-list">

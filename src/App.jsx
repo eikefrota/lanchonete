@@ -296,7 +296,7 @@ function App() {
             <div className="footer-brand">
               <i className="fa-solid fa-burger" id="footer-logo">
                 {" "}
-                Frota
+                FastDish
               </i>
               <p className="footer-desc">
                 O melhor sabor da cidade. Pizzas, hambúgueres e bebidas geladas
@@ -363,7 +363,7 @@ function App() {
 
           <div className="footer-bottom">
             <span className="footer-copyright">
-              &copy; 2025 Frota. Todos os direitos reservados.
+              &copy; 2025 FastDish. Todos os direitos reservados.
             </span>
           </div>
         </div>
