@@ -36,6 +36,20 @@
   font-weight: bold;
 }
 
+/* Disabled state: gray background and unavailable cursor */
+#confirm-payment-btn[disabled] {
+  background-color: #e0e0e0;
+  color: #333;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none;
+}
+
+/* Only apply hover visual effects when not disabled */
+#confirm-payment-btn:not([disabled]):hover {
+  transform: scale(1.05);
+}
+
 /* Pills for payment options */
 .payment-methods {
   display: flex;
@@ -125,4 +139,10 @@
 .address-input[disabled] {
   opacity: 0.8;
   background: #f9fafb;
+}
+
+/* Small style for card brand icons inside inputs */
+.card-brand-icon {
+  font-size: 18px;
+  color: #64748b;
 }

@@ -1,4 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
+import { validateCardAll, detectBrand } from "../utils/cardValidation";
+import visaSrc from "../assets/brands/visa.svg";
+import mcSrc from "../assets/brands/mastercard.svg";
+import amexSrc from "../assets/brands/amex.svg";
+import discSrc from "../assets/brands/discover.svg";
 
 export default function PaymentModal({
   address,
@@ -26,6 +31,7 @@ export default function PaymentModal({
   const [cardCvv, setCardCvv] = useState("");
   const [cardType, setCardType] = useState(address.card?.type || ""); // 'Crédito' | 'Débito'
   const [cardErrors, setCardErrors] = useState({});
+  const [cardBrand, setCardBrand] = useState(() => detectBrand(cardNumber));
 
   useEffect(() => {
     const prevActive = document.activeElement;
@@ -88,7 +94,7 @@ export default function PaymentModal({
       : "";
     // validate before saving
     if (address.paymentMethod === "Cartão") {
-      const errs = validateCardAll();
+      const errs = validateCardAllLocal();
       if (Object.keys(errs).length > 0) {
         setCardErrors(errs);
         return;
@@ -110,54 +116,36 @@ export default function PaymentModal({
     onConfirm();
   }
 
-  // validation helpers
-  function validateCardNumberLuhn(num) {
-    const digits = String(num).replace(/\D/g, "");
-    if (digits.length < 12) return false; // too short
-    let sum = 0;
-    let shouldDouble = false;
-    for (let i = digits.length - 1; i >= 0; i--) {
-      let d = parseInt(digits.charAt(i), 10);
-      if (shouldDouble) {
-        d *= 2;
-        if (d > 9) d -= 9;
-      }
-      sum += d;
-      shouldDouble = !shouldDouble;
+  // validation will use shared helpers from utils/cardValidation
+  function validateCardAllLocal() {
+    return validateCardAll({
+      name: cardName,
+      number: cardNumber,
+      expiry: cardExpiry,
+      cvv: cardCvv,
+      type: cardType,
+    });
+  }
+
+  // realtime validation + brand detection
+  useEffect(() => {
+    const brand = detectBrand(cardNumber);
+    setCardBrand(brand);
+
+    // only validate realtime when cartão is selected
+    if (address.paymentMethod === "Cartão") {
+      const errs = validateCardAllLocal();
+      setCardErrors(errs);
     }
-    return sum % 10 === 0;
-  }
-
-  function validateExpiry(mmYY) {
-    const d = String(mmYY).replace(/\D/g, "");
-    if (d.length !== 4) return false;
-    const mm = parseInt(d.slice(0, 2), 10);
-    const yy = parseInt(d.slice(2), 10);
-    if (isNaN(mm) || isNaN(yy)) return false;
-    if (mm < 1 || mm > 12) return false;
-    const now = new Date();
-    const fullYear = 2000 + yy;
-    const exp = new Date(fullYear, mm, 0, 23, 59, 59); // last day of month
-    return exp >= now;
-  }
-
-  function validateCvv(cvv) {
-    const d = String(cvv).replace(/\D/g, "");
-    return d.length === 3 || d.length === 4;
-  }
-
-  function validateCardAll() {
-    const errs = {};
-    if (!cardName || cardName.trim().length < 2)
-      errs.cardName = "Nome do titular inválido";
-    if (!validateCardNumberLuhn(cardNumber))
-      errs.cardNumber = "Número do cartão inválido";
-    if (!validateExpiry(cardExpiry))
-      errs.cardExpiry = "Validade inválida ou expirou";
-    if (!validateCvv(cardCvv)) errs.cardCvv = "CVV inválido";
-    if (!cardType) errs.cardType = "Selecione crédito ou débito";
-    return errs;
-  }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [
+    cardName,
+    cardNumber,
+    cardExpiry,
+    cardCvv,
+    cardType,
+    address.paymentMethod,
+  ]);
 
   return (
     <section id="payment" aria-label="Forma de pagamento">
@@ -293,18 +281,80 @@ export default function PaymentModal({
                     {cardErrors.cardName}
                   </p>
                 )}
-                <input
-                  type="text"
-                  placeholder="Número do cartão"
-                  className="address-input"
-                  value={formatCardDisplay(cardNumber)}
-                  onChange={(e) => {
-                    const digits = e.target.value
-                      .replace(/\D/g, "")
-                      .slice(0, 16);
-                    setCardNumber(digits);
-                  }}
-                />
+                <div style={{ position: "relative" }}>
+                  <input
+                    type="text"
+                    placeholder="Número do cartão"
+                    className="address-input"
+                    value={formatCardDisplay(cardNumber)}
+                    onChange={(e) => {
+                      const digits = e.target.value
+                        .replace(/\D/g, "")
+                        .slice(0, 16);
+                      setCardNumber(digits);
+                    }}
+                    style={{ paddingRight: 44 }}
+                  />
+                  <span
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      right: 10,
+                      top: "50%",
+                      transform: "translateY(-50%)",
+                      fontSize: 16,
+                      color: "#64748b",
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: 6,
+                    }}
+                    aria-label={
+                      cardBrand
+                        ? `Bandeira do cartão: ${cardBrand}`
+                        : "Bandeira do cartão desconhecida"
+                    }
+                  >
+                    {cardBrand === "visa" && (
+                      <img
+                        src={visaSrc}
+                        alt="Visa"
+                        title="Visa"
+                        style={{ height: 20 }}
+                      />
+                    )}
+                    {cardBrand === "mastercard" && (
+                      <img
+                        src={mcSrc}
+                        alt="MasterCard"
+                        title="MasterCard"
+                        style={{ height: 20 }}
+                      />
+                    )}
+                    {cardBrand === "amex" && (
+                      <img
+                        src={amexSrc}
+                        alt="American Express"
+                        title="American Express"
+                        style={{ height: 20 }}
+                      />
+                    )}
+                    {cardBrand === "discover" && (
+                      <img
+                        src={discSrc}
+                        alt="Discover"
+                        title="Discover"
+                        style={{ height: 20 }}
+                      />
+                    )}
+                    {cardBrand === "unknown" && (
+                      <i
+                        className="fa-solid fa-credit-card"
+                        aria-hidden="true"
+                        title="Cartão"
+                      ></i>
+                    )}
+                  </span>
+                </div>
                 {cardErrors.cardNumber && (
                   <p className="warning-text" style={{ color: "#ef4444" }}>
                     {cardErrors.cardNumber}
@@ -421,7 +471,7 @@ export default function PaymentModal({
               disabled={
                 !address.paymentMethod ||
                 (address.paymentMethod === "Cartão" &&
-                  Object.keys(validateCardAll()).length > 0)
+                  Object.keys(validateCardAllLocal()).length > 0)
               }
             >
               Finalizar pedido

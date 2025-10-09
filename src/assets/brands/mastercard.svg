@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 40" role="img" aria-label="Mastercard simple">
+  <rect width="64" height="40" rx="4" fill="#ffffff" />
+  <g transform="translate(8,6)">
+    <!-- red circle on the left -->
+    <circle cx="16" cy="14" r="10" fill="#eb001b" />
+    <!-- yellow circle on the right, overlapping -->
+    <circle cx="32" cy="14" r="10" fill="#ffb300" />
+  </g>
+</svg>
