@@ -407,10 +407,18 @@ function App() {
         <div className="footer-container">
           <div className="footer-grid">
             <div className="footer-brand">
-              <i className="fa-solid fa-burger" id="footer-logo">
-                {" "}
+              <a
+                href="#home"
+                id="footer-logo"
+                className="footer-logo-link"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+              >
+                <i className="fa-solid fa-burger" aria-hidden="true"></i>
                 FastDish
-              </i>
+              </a>
               <p className="footer-desc">
                 O melhor sabor da cidade. Pizzas, hambúgueres e bebidas geladas
                 entregues rápido.

@@ -18,9 +18,14 @@ footer {
 
 .footer-brand #footer-logo,
 .footer-brand i#footer-logo {
-  font-size: 22px;
+  /* match header logo styles */
+  font-size: 26px;
   color: #ee5656;
-  font-weight: 700;
+  text-decoration: none; /* remove underline */
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-weight: 600;
 }
 
 .footer-desc {
