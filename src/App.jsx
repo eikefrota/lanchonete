@@ -9,27 +9,27 @@ import { fetchAddressByCep } from "./utils/viacep";
 
 import "./styles/style.css";
 
-import pizzaCalabresa from "./assets/pizza-calabresa.png";
-import pizzaCalabresa2 from "./assets/pizza-calabresa2.png";
-import pizzaBacon from "./assets/pizza-bacon.png";
-import pizzaMussarela from "./assets/pizza-mussarela.png";
-import pizzaPepperoni from "./assets/pizza-pepperoni.png";
-import pizzaPresunto from "./assets/pizza-presunto-e-queijo.png";
-import pizzaCogumelo from "./assets/pizza-cogumelo.png";
-import pizzaCogCalabresa from "./assets/pizza-cogumelo-e-calabresa.png";
-import hamb1 from "./assets/hambuguer-1.png";
-import hamb2 from "./assets/hambuguer-2.png";
-import hamb3 from "./assets/hamburguer-3.png";
-import hamb4 from "./assets/hambuguer-4.png";
-import hambChicken from "./assets/hamburguer-chicken.png";
-import sanduicheBife from "./assets/sanduiche-bife.png";
-import sanduicheIntegral from "./assets/sanduiche-integral.png";
-import coca from "./assets/coca.png";
-import guarana from "./assets/guarana.png";
-import sucoLaranja from "./assets/suco-laranja.png";
-import sucoMorango from "./assets/suco-morango.png";
-import milkshakeChocolate from "./assets/milkshake-chocolate.png";
-import milkshakeMorango from "./assets/milkshake-morango.png";
+import pizzaCalabresa from "./assets/pizzas/pizza-calabresa.png";
+import pizzaCalabresa2 from "./assets/pizzas/pizza-calabresa2.png";
+import pizzaBacon from "./assets/pizzas/pizza-bacon.png";
+import pizzaMussarela from "./assets/pizzas/pizza-mussarela.png";
+import pizzaPepperoni from "./assets/pizzas/pizza-pepperoni.png";
+import pizzaPresunto from "./assets/pizzas/pizza-presunto-e-queijo.png";
+import pizzaCogumelo from "./assets/pizzas/pizza-cogumelo.png";
+import pizzaCogCalabresa from "./assets/pizzas/pizza-cogumelo-e-calabresa.png";
+import hamb1 from "./assets/burguers/hambuguer-1.png";
+import hamb2 from "./assets/burguers/hambuguer-2.png";
+import hamb3 from "./assets/burguers/hamburguer-3.png";
+import hamb4 from "./assets/burguers/hambuguer-4.png";
+import hambChicken from "./assets/burguers/hamburguer-chicken.png";
+import sanduicheBife from "./assets/burguers/sanduiche-bife.png";
+import sanduicheIntegral from "./assets/burguers/sanduiche-integral.png";
+import coca from "./assets/bebidas/coca.png";
+import guarana from "./assets/bebidas/guarana.png";
+import sucoLaranja from "./assets/bebidas/suco-laranja.png";
+import sucoMorango from "./assets/bebidas/suco-morango.png";
+import milkshakeChocolate from "./assets/bebidas/milkshake-chocolate.png";
+import milkshakeMorango from "./assets/bebidas/milkshake-morango.png";
 
 const dishesData = [
   {
