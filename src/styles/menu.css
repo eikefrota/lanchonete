@@ -46,19 +46,19 @@
   padding: 12px 8px;
   scroll-snap-type: x mandatory;
   width: 100%;
-  /* modern soft fade on the sides using a mask */
+  /* very subtle soft fade on the sides (almost imperceptible) */
   mask-image: linear-gradient(
     to right,
     transparent 0%,
-    black 3%,
-    black 97%,
+    black 1%,
+    black 99%,
     transparent 100%
   );
   -webkit-mask-image: linear-gradient(
     to right,
     transparent 0%,
-    black 3%,
-    black 97%,
+    black 1%,
+    black 99%,
     transparent 100%
   );
 
