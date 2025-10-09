@@ -146,3 +146,13 @@
   font-size: 18px;
   color: #64748b;
 }
+
+/* PIX block styles */
+.pix-box {
+  align-items: flex-start;
+}
+.pix-key {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono",
+    "Courier New", monospace;
+  white-space: nowrap;
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import QRCode from "qrcode";
 import { validateCardAll, detectBrand } from "../utils/cardValidation";
 import visaSrc from "../assets/brands/visa.svg";
 import mcSrc from "../assets/brands/mastercard.svg";
@@ -32,6 +33,84 @@ export default function PaymentModal({
   const [cardType, setCardType] = useState(address.card?.type || ""); // 'Crédito' | 'Débito'
   const [cardErrors, setCardErrors] = useState({});
   const [cardBrand, setCardBrand] = useState(() => detectBrand(cardNumber));
+  const DEFAULT_PIX_KEY = "85999062338";
+  const [pixCopied, setPixCopied] = useState(false);
+  const [showPayload, setShowPayload] = useState(false);
+  const [payloadCopied, setPayloadCopied] = useState(false);
+  const [pixDataUrl, setPixDataUrl] = useState(null);
+
+  // Helper to build EMV-like payload for PIX (BR Code)
+  function tag(id, value) {
+    const len = String(value).length.toString().padStart(2, "0");
+    return `${id}${len}${value}`;
+  }
+
+  function crc16(str) {
+    let crc = 0xffff;
+    for (let c = 0; c < str.length; c++) {
+      crc ^= str.charCodeAt(c) << 8;
+      for (let i = 0; i < 8; i++) {
+        if ((crc & 0x8000) !== 0) crc = ((crc << 1) ^ 0x1021) & 0xffff;
+        else crc = (crc << 1) & 0xffff;
+      }
+    }
+    return crc.toString(16).toUpperCase().padStart(4, "0");
+  }
+
+  function buildPixPayload({
+    key,
+    amount,
+    merchantName = "FastDish",
+    merchantCity = "SAO PAULO",
+    txid = "*",
+  } = {}) {
+    const amountStr = amount ? String(Number(amount).toFixed(2)) : undefined;
+    let payload = "";
+    payload += tag("00", "01"); // payload format indicator
+    payload += tag("01", "12"); // point of initiation method (dynamic)
+
+    // Merchant Account Information - Pix (GUI + key)
+    let mai = "";
+    mai += tag("00", "BR.GOV.BCB.PIX");
+    mai += tag("01", key);
+    payload += tag("26", mai);
+
+    payload += tag("52", "0000"); // Merchant Category Code
+    payload += tag("53", "986"); // Currency BRL
+    if (amountStr) payload += tag("54", amountStr);
+    payload += tag("58", "BR");
+    payload += tag("59", merchantName.substring(0, 25));
+    payload += tag("60", merchantCity.substring(0, 15));
+
+    // Additional data field template - txid
+    let additional = tag("05", txid.substring(0, 25));
+    payload += tag("62", additional);
+
+    // CRC (63) - compute over payload + '6304'
+    const crc = crc16(payload + "6304");
+    payload += tag("63", crc);
+    return payload;
+  }
+
+  // Build QR image URL using a simple external QR generation service
+  function buildPixQrUrlFromPayload(payload) {
+    const encoded = encodeURIComponent(payload);
+    return `https://api.qrserver.com/v1/create-qr-code/?data=${encoded}&size=300x300`;
+  }
+
+  // Generate QR locally using `qrcode` lib; fallback to external service
+  useEffect(() => {
+    if (address.paymentMethod !== "Pix") return;
+    // Build payload using the default key + amount
+    const payload = buildPixPayload({ key: DEFAULT_PIX_KEY, amount: total });
+    // Store the payload in a local variable so UI can copy it
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    setTimeout(() => {
+      QRCode.toDataURL(payload, { margin: 1, width: 300 })
+        .then((url) => setPixDataUrl(url))
+        .catch(() => setPixDataUrl(buildPixQrUrlFromPayload(payload)));
+    }, 0);
+  }, [address.paymentMethod, address.pixKey, total]);
 
   useEffect(() => {
     const prevActive = document.activeElement;
@@ -111,6 +190,19 @@ export default function PaymentModal({
             type: cardType || "",
           }
         : undefined;
+
+    // if Pix, build payload and include in address before confirming
+    if (address.paymentMethod === "Pix") {
+      const payload = buildPixPayload({ key: DEFAULT_PIX_KEY, amount: total });
+      setAddress((a) => ({
+        ...a,
+        changeFor: changeForValue,
+        card: cardSummary,
+        pixPayload: payload,
+      }));
+      onConfirm(payload);
+      return;
+    }
 
     setAddress((a) => ({ ...a, changeFor: changeForValue, card: cardSummary }));
     onConfirm();
@@ -229,7 +321,10 @@ export default function PaymentModal({
                   key={m.id}
                   aria-pressed={selected}
                   onClick={() =>
-                    setAddress((a) => ({ ...a, paymentMethod: m.id }))
+                    setAddress((a) => ({
+                      ...a,
+                      paymentMethod: m.id,
+                    }))
                   }
                   className={"payment-pill" + (selected ? " selected" : "")}
                   style={{ marginRight: 8 }}
@@ -378,18 +473,29 @@ export default function PaymentModal({
                       {cardErrors.cardExpiry}
                     </p>
                   )}
-                  <input
-                    type="text"
-                    placeholder="CVV"
-                    className="address-input"
-                    value={cardCvv}
-                    onChange={(e) => {
-                      const digits = e.target.value
-                        .replace(/\D/g, "")
-                        .slice(0, 4);
-                      setCardCvv(digits);
-                    }}
-                  />
+                  {/* CVV input: max length depends on card brand (Amex=4, others=3) */}
+                  {(() => {
+                    const cvvMax = cardBrand === "amex" ? 4 : 3;
+                    return (
+                      <input
+                        type="text"
+                        inputMode="numeric"
+                        placeholder={
+                          cardBrand === "amex" ? "CVV (4)" : "CVV (3)"
+                        }
+                        className="address-input"
+                        value={cardCvv}
+                        maxLength={cvvMax}
+                        onChange={(e) => {
+                          const digits = e.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, cvvMax);
+                          setCardCvv(digits);
+                        }}
+                        aria-label={`CVV, use ${cvvMax} digits`}
+                      />
+                    );
+                  })()}
                   {cardErrors.cardCvv && (
                     <p className="warning-text" style={{ color: "#ef4444" }}>
                       {cardErrors.cardCvv}
@@ -401,6 +507,78 @@ export default function PaymentModal({
                     {cardErrors.cardType}
                   </p>
                 )}
+              </div>
+            </div>
+          )}
+
+          {address.paymentMethod === "Pix" && (
+            <div style={{ marginTop: 12 }}>
+              <p className="address-label">Pagamento via Pix</p>
+              <div className="pix-box" style={{ display: "flex", gap: 12 }}>
+                <div>
+                  <img
+                    src={
+                      pixDataUrl ||
+                      buildPixQrUrlFromPayload(
+                        buildPixPayload({ key: DEFAULT_PIX_KEY, amount: total })
+                      )
+                    }
+                    alt="QR code do Pix"
+                    width={120}
+                    height={120}
+                    style={{ borderRadius: 6, border: "1px solid #e2e8f0" }}
+                  />
+                </div>
+
+                <div style={{ flex: 1 }}>
+                  <p style={{ margin: 0, fontSize: 14, marginBottom: 6 }}>
+                    Pix — Copia & Cola (BR Code)
+                  </p>
+                  <div style={{ marginTop: 6 }}>
+                    <textarea
+                      readOnly
+                      value={buildPixPayload({
+                        key: DEFAULT_PIX_KEY,
+                        amount: total,
+                      })}
+                      style={{
+                        width: "100%",
+                        minHeight: 92,
+                        padding: 8,
+                        fontFamily: "monospace",
+                      }}
+                      aria-label="Payload Pix Copia e Cola"
+                    />
+                    <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                      <button
+                        type="button"
+                        className="already-changed-btn"
+                        onClick={() => {
+                          const payload = buildPixPayload({
+                            key: DEFAULT_PIX_KEY,
+                            amount: total,
+                          });
+                          if (
+                            navigator.clipboard &&
+                            navigator.clipboard.writeText
+                          ) {
+                            navigator.clipboard.writeText(payload).then(() => {
+                              setPayloadCopied(true);
+                              setTimeout(() => setPayloadCopied(false), 1800);
+                            });
+                          }
+                        }}
+                      >
+                        {payloadCopied ? "Copiado" : "Copiar"}
+                      </button>
+                      <p
+                        style={{ color: "#64748b", marginTop: 6, fontSize: 13 }}
+                      >
+                        Após o pagamento, envie o comprovante pelo WhatsApp
+                      </p>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           )}

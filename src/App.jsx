@@ -276,7 +276,7 @@ function App() {
     return valid;
   }
 
-  function checkout() {
+  function checkout(pixPayload) {
     if (!validateAddress()) {
       setShowAddressErrors(true);
       showToast("Por favor, preencha todos os campos obrigatórios!", false);
@@ -317,6 +317,8 @@ function App() {
       ? `*Pagamento:* ${address.paymentMethod}${
           address.paymentMethod === "Dinheiro" && address.changeFor
             ? ` — Troco para: ${address.changeFor}`
+            : address.paymentMethod === "Pix" && pixPayload
+            ? ` — Pix Copia e Cola: ${pixPayload}`
             : ""
         }`
       : "*Pagamento:* Não especificado";
